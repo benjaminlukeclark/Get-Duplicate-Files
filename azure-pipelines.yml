@@ -16,3 +16,17 @@ steps:
   inputs:
     script: |
       dir $(Agent.BuildDirectory)
+
+# Create directory with two duplicate files
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      New-Item -Path "C:\" -Name "Test" -ItemType Directory
+      New-Item -Path "C:\Test" -Name "Test1.txt" -ItemType File -Value "HelloWorld"
+      New-Item -Path "C:\Test" -Name "Test2.txt" -ItemType File -Value "HelloWorld"
+
+- task: CmdLine@2
+  inputs:
+    script: 'powershell.exe ".\monitor.ps1 -SEARCH_LOCATION C:\Test -LOG_LOCATION C:\ -MONITORING_FREQUENCY 1"'
+    workingDirectory: '$(Agent.BuildDirectory)'
