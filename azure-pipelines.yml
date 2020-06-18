@@ -28,6 +28,7 @@ steps:
         New-Item -Path "C:\Test" -Name "Test$counter.txt" -ItemType File -Value "HelloWorld"
         $counter ++
       }
+      Write-Host "##vso[task.complete result=Succeeded;]99 duplicate files created for testing purposes."
 
 - task: CmdLine@2
   inputs:
@@ -44,7 +45,7 @@ steps:
       
       If ($PossibleDuplicatesFound -ne 99) {
       
-          Write-Host "vso[task.logissue type=error;sourcepath=DuplicateFileLocator\DuplicateFileLocator.psm1;linenumber=226;columnnumber=1;code=100;]Incorrect number of duplicate files detected. 99 duplicate files were created, but $PossibleDuplicatesFound duplicate files were detected."
+          Write-Host "##vso[task.logissue type=error;sourcepath=DuplicateFileLocator\DuplicateFileLocator.psm1;linenumber=226;columnnumber=1;code=100;]Incorrect number of duplicate files detected. 99 duplicate files were created, but $PossibleDuplicatesFound duplicate files were detected."
           
       } else {
       
