@@ -23,10 +23,31 @@ steps:
     targetType: 'inline'
     script: |
       New-Item -Path "C:\" -Name "Test" -ItemType Directory
-      New-Item -Path "C:\Test" -Name "Test1.txt" -ItemType File -Value "HelloWorld"
-      New-Item -Path "C:\Test" -Name "Test2.txt" -ItemType File -Value "HelloWorld"
+      $counter = 0
+      while ($counter -lt 99) {
+        New-Item -Path "C:\Test" -Name "Test$counter.txt" -ItemType File -Value "HelloWorld"
+        $counter ++
+      }
 
 - task: CmdLine@2
   inputs:
-    script: 'powershell.exe ".\monitor.ps1 -SEARCH_LOCATION C:\Test -LOG_LOCATION C:\ -MONITORING_FREQUENCY 1"'
+    script: 'powershell.exe ".\monitor.ps1 -SEARCH_LOCATION C:\Test -LOG_LOCATION C:\Test -MONITORING_FREQUENCY 1"'
     workingDirectory: '$(Build.Repository.LocalPath)'
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      $Report = Get-ChildItem -Path C:\Test -Recurse | where {$_.Name -like "*html"}
+      $Regex = Get-Content -Path $Report.FullName | Select-String '</h1><h2>([0-9]+) possible duplicates found</h2><h3>' -AllMatches
+      $PossibleDuplicatesFound = $Regex.Matches[0].Groups[1].Value
+      
+      If ($PossibleDuplicatesFound -ne 99) {
+      
+          throw [System.IO.InvalidDataException]::new('Incorrect number of duplicate files found')
+          
+      } else {
+      
+          "Correct number of duplicates found" | Write-Output
+      
+      }
