@@ -26,7 +26,7 @@ steps:
     script: |
       New-Item -Path "C:\" -Name "Test" -ItemType Directory
       $counter = 0
-      while ($counter -lt 99) {
+      while ($counter -lt 100) {
         New-Item -Path "C:\Test" -Name "Test$counter.txt" -ItemType File -Value "HelloWorld"
         $counter ++
       }
