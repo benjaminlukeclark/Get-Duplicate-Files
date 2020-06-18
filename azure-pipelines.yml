@@ -19,6 +19,8 @@ steps:
 
 # Create directory with two duplicate files
 - task: PowerShell@2
+  name: "CreateDummyDuplicates"
+  displayName: "Create duplicate files"
   inputs:
     targetType: 'inline'
     script: |
@@ -31,13 +33,16 @@ steps:
       Write-Host "##vso[task.complete result=Succeeded;]99 duplicate files created for testing purposes."
 
 - task: CmdLine@2
+  name: "RunMonitorPS1"
+  displayName: "Run monitor.ps1"
   inputs:
     script: 'powershell.exe ".\monitor.ps1 -SEARCH_LOCATION C:\Test -LOG_LOCATION C:\Test -MONITORING_FREQUENCY 1"'
     workingDirectory: '$(Build.Repository.LocalPath)'
 
 - task: PowerShell@2
+  name: "DuplicateFileCheck"
+  displayName: "Check duplicate files"
   inputs:
-    failOnStderr: true
     targetType: 'inline'
     script: |
       $Report = Get-ChildItem -Path C:\Test -Recurse | where {$_.Name -like "*html"}
@@ -47,6 +52,7 @@ steps:
       If ($PossibleDuplicatesFound -ne 99) {
       
           Write-Host "##vso[task.logissue type=error;sourcepath=DuplicateFileLocator\DuplicateFileLocator.psm1;linenumber=226;columnnumber=1;code=100;]Incorrect number of duplicate files detected. 99 duplicate files were created, but $PossibleDuplicatesFound duplicate files were detected."
+          exit 1
           
       } else {
       
