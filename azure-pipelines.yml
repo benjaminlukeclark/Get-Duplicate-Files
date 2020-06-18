@@ -30,7 +30,7 @@ steps:
         New-Item -Path "C:\Test" -Name "Test$counter.txt" -ItemType File -Value "HelloWorld"
         $counter ++
       }
-      Write-Host "##vso[task.complete result=Succeeded;]99 duplicate files created for testing purposes."
+      Write-Host "99 duplicate files created for testing purposes."
 
 - task: CmdLine@2
   name: "RunMonitorPS1"
@@ -56,6 +56,6 @@ steps:
           
       } else {
       
-          Write-Host "##vso[task.complete result=Succeeded;]$PossibleDuplicatesFound/99 duplicate files detected."
+          Write-Host "$PossibleDuplicatesFound/99 duplicate files detected."
       
       }
