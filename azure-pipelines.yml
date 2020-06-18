@@ -29,4 +29,4 @@ steps:
 - task: CmdLine@2
   inputs:
     script: 'powershell.exe ".\monitor.ps1 -SEARCH_LOCATION C:\Test -LOG_LOCATION C:\ -MONITORING_FREQUENCY 1"'
-    workingDirectory: '$(Agent.BuildDirectory)'
+    workingDirectory: '$(Build.Repository.LocalPath)'
