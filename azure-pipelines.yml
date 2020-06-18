@@ -44,10 +44,10 @@ steps:
       
       If ($PossibleDuplicatesFound -ne 99) {
       
-          throw [System.IO.InvalidDataException]::new('Incorrect number of duplicate files found')
+          Write-Host "vso[task.logissue type=error;sourcepath=DuplicateFileLocator\DuplicateFileLocator.psm1;linenumber=226;columnnumber=1;code=100;]Incorrect number of duplicate files detected. 99 duplicate files were created, but $PossibleDuplicatesFound duplicate files were detected."
           
       } else {
       
-          "Correct number of duplicates found" | Write-Output
+          Write-Host "##vso[task.complete result=Succeeded;]$PossibleDuplicatesFound/99 duplicate files detected."
       
       }
